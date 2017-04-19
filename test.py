@@ -11,8 +11,8 @@ sift = cv2.xfeatures2d.SIFT_create(500)
 kp, res = sift.detectAndCompute(img, None)
 sift = cv2.xfeatures2d.SIFT_create(1000)
 img2, M = method.dataIncreasing_camera(img)
-# img2=cv2.imread("3.jpg")
-# img2=cv2.resize(img2,(700,700))
+img2=cv2.imread("3.jpg")
+img2=cv2.resize(img2,(700,700))
 kp2, res2 = sift.detectAndCompute(img2, None)
 responses = np.array([k for k in range(0, len(kp))])
 knn = cv2.ml.KNearest_create()
@@ -21,7 +21,7 @@ out = cv2.drawKeypoints(img2, kp2, img2)
 ret, results, neighbours, dist = knn.findNearest(res2, 3)
 for i in range(0, len(neighbours)):
     print "Match:"+str(dist[i])+"Weigh:"+str(weigh[int(neighbours[i][0])])+"Num"+str(int(neighbours[i][0]))
-    if dist[i][0]<min(weigh[int(neighbours[i][0]), 0],weigh[int(neighbours[i][0]), 1]):
+    if dist[i][0]<min(weigh[int(neighbours[i][0]), 1],weigh[int(neighbours[i][0]), 0]):
         match = cv2.DMatch(int(neighbours[i][0]), i, 3)
         print "Good Match"
         matchs.append(match)

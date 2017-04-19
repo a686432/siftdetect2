@@ -4,6 +4,7 @@ import method
 
 
 def siftComp(img1, nloop):
+    acc = 0
     sift = cv2.xfeatures2d.SIFT_create(nfeature)
     kp, res = sift.detectAndCompute(img1, None)
     pts = np.array([[[k.pt[0], k.pt[1]] for k in kp]])
@@ -61,9 +62,11 @@ def siftComp(img1, nloop):
                                                          weigh[int(neighbours[k][0]), 1])
         print "The number of true match and false match is " + str((len(nTure), len(nFalse), len(nTure)*1.0 / (len(nFalse)+len(nTure))))
         print "The number of true match and false match is " + str((len(nTure), len(nnFalse), len(nTure)*1.0 / (len(nnFalse)+len(nTure))))
-
+        acc+=len(nTure)*1.0 / (len(nnFalse)+len(nTure))
+    print acc/nloop
     out = cv2.drawMatches(img1, kp, img2, kp2, matchs, out)
     cv2.imshow("sift picture of translation", out)
+    cv2.waitKey(0)
     return
 
 
@@ -80,8 +83,8 @@ sift = cv2.xfeatures2d.SIFT_create(nfeature)
 kp, res = sift.detectAndCompute(img1, None)
 out = cv2.drawKeypoints(img1, kp, img1)
 # cv2.imshow("sift picture of orginal", out)
-siftComp(img, 100)
+siftComp(img, 1000)
 print weigh
 np.save("a", weigh)
 np.save("b", predict)
-cv2.waitKey(0)
+
