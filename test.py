@@ -68,8 +68,8 @@ if __name__ == "__main__":
     print len(neighbours)
 
     for i in range(0, len(neighbours)):
-        #print "Match:" + str(dist[i]) + "Weigh:" + str(weigh[int(neighbours[i][0])]) + "Num" + str(
-         #   int(neighbours[i][0]))
+        # print "Match:" + str(dist[i]) + "Weigh:" + str(weigh[int(neighbours[i][0])]) + "Num" + str(
+        # int(neighbours[i][0]))
         if dist[i][0] < min(weigh[int(neighbours[i][0]), 1] , weigh[
             int(neighbours[i][0]), 0]):  # and dist[i][0]/dist[i][1]<distinguish[1,int(neighbours[i][0])]:
             match = cv2.DMatch(int(neighbours[i][0]), i, 3)
