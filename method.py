@@ -8,6 +8,8 @@ def dataIncreasing_camera(img):
     ax = np.random.uniform(0,np.pi/4)
     ay = np.random.uniform(0,np.pi/4)
     az = 0
+    gAlpha=20
+    gGamma=0
     s = np.random.uniform(0.5,1.5)
     height, width, channel = img.shape
     pts = [[-height / 2, -width / 2, 0], [-height / 2, width / 2, 0], [height / 2, -width / 2, 0],
@@ -25,6 +27,10 @@ def dataIncreasing_camera(img):
          dst])
     H, k = cv2.findHomography(pts, d)
     out = cv2.warpPerspective(img, H, (height * 3, width * 3))
+    l=np.float32(1)
+
+    cv2.pow(out,l,out)
+    #cv2.addWeighted(out, (gAlpha / 50.0), out, 0, gGamma, out)
     return out, H
 
 
