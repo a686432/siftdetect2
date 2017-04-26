@@ -9,7 +9,7 @@ def inputimage():
     img = cv2.imread(inputfilename + "0.jpg")
     img = cv2.resize(img, (1000, 1000))
     #img2, M = method.dataIncreasing_camera(img)
-    img2 = cv2.imread(inputfilename + "2.jpg")
+    img2 = cv2.imread(inputfilename + "3.jpg")
     img2 = cv2.resize(img2, (600, 600))
     weigh = np.load(basefilename + 'a' + str(nfeature) + '.npy')
     distinguish = np.load(basefilename + 'c' + str(nfeature) + '.npy')
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     MIN_MATCH_COUNT = 5
     nfeature = 1000
     npoint =600
-    nloop=1000
+    nloop=100
     weigh, distinguish, appearance, img, img2 = inputimage()
     kp, res, kp2, res2 = siftKnn()
 
@@ -80,7 +80,7 @@ if __name__ == "__main__":
         # print "Match:" + str(dist[i]) + "Weigh:" + str(weigh[int(neighbours[i][0])]) + "Num" + str(
         # int(neighbours[i][0]))
         if dist[i][0] < min(weigh[int(neighbours[i][0]), 0] , weigh[
-            int(neighbours[i][0]), 0])/2:  # and dist[i][0]/dist[i][1]<distinguish[1,int(neighbours[i][0])]:
+            int(neighbours[i][0]), 1]):  # and dist[i][0]/dist[i][1]<distinguish[1,int(neighbours[i][0])]:
             match = cv2.DMatch(int(neighbours[i][0]), i, 3)
             print "Good Match"
             matchs.append(match)
