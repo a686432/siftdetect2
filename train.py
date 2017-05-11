@@ -27,7 +27,10 @@ def siftComp(img1, nloop):
         nFalse = []
         nnTure = []
         nnFalse = []
-        ret, results, neighbours, dist = knn.findNearest(res2, 3)
+        if res2==None:
+            neighbours=[]
+        else:
+            ret, results, neighbours, dist = knn.findNearest(res2, 3)
         for k in range(0, len(neighbours)):
             # print dst[int(neighbours[k][0])]
 
@@ -70,11 +73,11 @@ def siftComp(img1, nloop):
                                                          weigh[int(neighbours[k][0]), 1])
         print apprearance
         print "The number of true match and false match is " + str(
-            (len(nTure), len(nFalse), len(nTure) * 1.0 / (len(nFalse) + len(nTure))))
+            (len(nTure), len(nFalse), len(nTure) * 1.0 / (len(nFalse) + len(nTure)+0.001)))
         print "The number of true match and false match is " + str(
-            (len(nTure), len(nnFalse), len(nTure) * 1.0 / (len(nnFalse) + len(nTure))))
+            (len(nTure), len(nnFalse), len(nTure) * 1.0 / (len(nnFalse) + len(nTure)+0.001)))
 
-        acc += len(nTure) * 1.0 / (len(nnFalse) + len(nTure))
+        acc += len(nTure) * 1.0 / (len(nnFalse) + len(nTure)+0.001)
 
     print acc / nloop
     out = cv2.drawMatches(img1, kp, img2, kp2, matchs, out)
@@ -89,9 +92,9 @@ The program achieve the following function:
     we use a series of the transforms and record the 
 
 '''
-nfeature = 1000
-basefilename="res/40108/"
-inputfilename="data/40108/"
+nfeature = 2000
+basefilename="res/"
+inputfilename=""
 if os.path.isfile(basefilename+'a'+str(nfeature)+'.npy'):
     weigh = np.load(basefilename+'a'+str(nfeature)+'.npy')
 else:
@@ -107,17 +110,17 @@ else:
 apprearance = np.zeros(nfeature)
 
 
-img = cv2.imread(inputfilename+"0.jpg")
-img1 = cv2.imread(inputfilename+"0.jpg")
-img = cv2.resize(img, (1000, 1000))
-img1 = cv2.resize(img1, (1000, 1000))
+img = cv2.imread(inputfilename+"1.jpg")
+img1 = cv2.imread(inputfilename+"1.jpg")
+img = cv2.resize(img, (600, 600))
+img1 = cv2.resize(img1, (600, 600))
 
 sift = cv2.xfeatures2d.SIFT_create(nfeature)
 kp, res = sift.detectAndCompute(img1, None)
 out = cv2.drawKeypoints(img1, kp, img1)
 cv2.imshow("sift picture of orginal", out)
 
-siftComp(img, 100)
+siftComp(img,100)
 
 np.save(basefilename+'a'+str(nfeature), weigh)
 np.save(basefilename+'b'+str(nfeature), predict)
