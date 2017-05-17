@@ -27,6 +27,7 @@ def siftComp(img1, nloop):
         nFalse = []
         nnTure = []
         nnFalse = []
+        print len(res2)
         if res2==None:
             neighbours=[]
         else:
@@ -94,7 +95,7 @@ The program achieve the following function:
 '''
 nfeature = 2000
 basefilename="res/"
-inputfilename=""
+inputfilename="data/40108/"
 if os.path.isfile(basefilename+'a'+str(nfeature)+'.npy'):
     weigh = np.load(basefilename+'a'+str(nfeature)+'.npy')
 else:
@@ -110,18 +111,18 @@ else:
 apprearance = np.zeros(nfeature)
 
 
-img = cv2.imread(inputfilename+"1.jpg")
-img1 = cv2.imread(inputfilename+"1.jpg")
+img = cv2.imread(inputfilename+"0.jpg")
+img1 = cv2.imread(inputfilename+"0.jpg")
 img = cv2.resize(img, (600, 600))
 img1 = cv2.resize(img1, (600, 600))
 
 sift = cv2.xfeatures2d.SIFT_create(nfeature)
 kp, res = sift.detectAndCompute(img1, None)
 out = cv2.drawKeypoints(img1, kp, img1)
-cv2.imshow("sift picture of orginal", out)
 
 siftComp(img,100)
-
+cv2.imshow("sift picture of orginal", out)
+cv2.waitKey(0)
 np.save(basefilename+'a'+str(nfeature), weigh)
 np.save(basefilename+'b'+str(nfeature), predict)
 np.save(basefilename+'c'+str(nfeature), distinguish)

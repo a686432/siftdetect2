@@ -25,6 +25,7 @@ import os
 @fn_timer'''
 def sift_detect(img1,img2):
     sift = cv2.xfeatures2d.SIFT_create()
+    #sift = cv2.xfeatures2d.SURF_create()
  # find the keypoints and descriptors with SIFT
     kp1, des1 = sift.detectAndCompute(img1,None)
     kp2, des2 = sift.detectAndCompute(img2,None)
@@ -41,7 +42,7 @@ def good_matches(matches,img1,img2,kp1,kp2):
     MIN_MATCH_COUNT = 5
     good = []
     for m,n in matches:
-        if m.distance < 0.8*n.distance:
+        if m.distance < 0.6*n.distance:
             good.append(m)
     print "correspondences:%d" % len(good)
     if  len(good)<MIN_MATCH_COUNT:
@@ -55,7 +56,7 @@ def good_matches(matches,img1,img2,kp1,kp2):
         src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
         dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
 
-        M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,4.0)
+        M, mask = cv2.findHomography(src_pts,dst_pts, cv2.RANSAC,4.0)
         tmp = 0
         for i in mask:
             if i[0]==1:
@@ -63,11 +64,13 @@ def good_matches(matches,img1,img2,kp1,kp2):
         print "correct matches:%d" % tmp
         matchesMask = mask.ravel().tolist()
         h,w,l = img1.shape
+        #pts = np.float32([[[705,306],[1325,304],[1330,686],[702,682]]])
         pts = np.float32(
-            [[[w / 4, h / 4], [w / 4, (h - 1) * 3 / 4], [(w - 1) * 3 / 4, (h - 1) * 3 / 4], [(w - 1) * 3 / 4, h / 4]]])
+             [[[w / 4, h / 4], [w / 4, (h - 1) * 3 / 4], [(w - 1) * 3 / 4, (h - 1) * 3 / 4], [(w - 1) * 3 / 4, h / 4]]])
         dst = cv2.perspectiveTransform(pts,M)
-        img3 = cv2.polylines(img2,[np.int32(dst)],True,255,10, cv2.LINE_AA)
+        img3 = cv2.polylines(img2,[np.int32(dst)],True,(0,255,0),1, cv2.LINE_AA)
         #img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
+        print "M:"+str(M)
     return good,matchesMask,img3,tmp,flag
 
 def drawmatches(matchesMask,img1,img2,kp1,kp2,good):
@@ -76,7 +79,9 @@ def drawmatches(matchesMask,img1,img2,kp1,kp2,good):
                    matchesMask = matchesMask, # draw only inliers
                    flags = 2)
 
+    #img3=img2
     img3 = cv2.drawMatches(img1,kp1,img2,kp2,good,None,**draw_params)
+    cv2.imwrite('203.png', img3)
     cv2.imshow('diffrrrsift1817.png',img3)
     #plt.imshow(img3, 'gray'),plt.show()
 

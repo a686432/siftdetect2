@@ -7,13 +7,14 @@ import compare1
 
 def inputimage():
     basefilename = "res/"
-    inputfilename = ""
-    img = cv2.imread(inputfilename + "1.jpg")
+    inputfilename = "1/"
+    img = cv2.imread(inputfilename + "0.bmp")
     img = cv2.resize(img, (600, 600))
-    #img2, M = method.dataIncreasing_camera(img)
-    img2 = cv2.imread(inputfilename + "0.jpg")
+    img2, M = method.dataIncreasing_camera(img)
+    img2 = cv2.imread(inputfilename + "141.bmp")
     img2 = cv2.resize(img2, (600, 600))
-    img2, M = method.dataIncreasing_camera(img2)
+    cv2.imshow("sift picture of translation2", img2)
+    #img2, M = method.dataIncreasing_camera(img2)
     weigh = np.load(basefilename + 'a' + str(nfeature) + '.npy')
     distinguish = np.load(basefilename + 'c' + str(nfeature) + '.npy')
     appearance = np.load(basefilename + 'd' + str(nfeature) + '.npy')
@@ -35,7 +36,7 @@ if __name__ == "__main__":
     '''
     MIN_MATCH_COUNT = 5
     nfeature = 2000
-    npoint =250
+    npoint =100
     nloop=50
     weigh, distinguish, appearance, img, img2 = inputimage()
 
@@ -115,7 +116,7 @@ if __name__ == "__main__":
             src_pts = np.float32([kp[m.queryIdx].pt for m in matchs[:]]).reshape(-1, 1, 2)
             dst_pts = np.float32([kp2[m.trainIdx].pt for m in matchs[:]]).reshape(-1, 1, 2)
 
-            M, mask = cv2.findHomography(src_pts,dst_pts, cv2.RANSAC, 3.0)
+            M, mask = cv2.findHomography(src_pts,dst_pts, cv2.RANSAC, 2.0)
             print M
             matchesMask = mask.ravel().tolist()
             p=1.0*sum(matchesMask)/len(matchesMask)
@@ -125,14 +126,14 @@ if __name__ == "__main__":
                 goodM=M
     if len(img.shape) > 2:
         h, w, d = img.shape
-        pts = np.float32([[[w/4, h/4], [w/4, (h - 1)*3/4], [(w - 1)*3/4, (h - 1)*3/4], [(w - 1)*3/4, h/4]]])
+        pts = np.float32([[[w/4,h/4], [w/4, (h - 1)*3/4], [(w - 1)*3/4, (h - 1)*3/4], [(w - 1)*3/4, h/4]]])
         dst = cv2.perspectiveTransform(pts, goodM)
         img2 = cv2.polylines(img2, [np.int32(dst)], True, 122, 3, cv2.LINE_AA)
         img = cv2.polylines(img, [np.int32(pts)], True, 255, 3, cv2.LINE_AA)
 
     out = cv2.drawMatches(img, kp, img2, kp2, matchs, out)
-    out = cv2.resize(out, (800,500))
+    out = cv2.resize(out, (1200,800))
     cv2.imshow("sift picture of translation", out)
-    cv2.imshow("sift picture of translation2", img2)
+
     cv2.waitKey(0)
     print weigh
